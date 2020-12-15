@@ -3,7 +3,7 @@
 //Global Variables 
 
 var allProducts = [];
-var maxClicksAllowed = 5;
+var maxClicksAllowed = 25;
 var actualClicks = 0;
 
 
@@ -13,7 +13,7 @@ var imageOneElement = document.getElementById('image-one');
 var imageTwoElement = document.getElementById('image-two');
 var imageThreeElement = document.getElementById('image-three');
 var resultsList = document.getElementById('results');
-// Product Contrusctor 
+// Product Contsructor 
 
 function Product(productName, src = 'jpg' || '.png' || '.gif') {
   this.productName = productName;
@@ -90,11 +90,28 @@ function renderProducts() {
   allProducts[productTwoIndex].views++;
 }
 
-
-
-
-// function handleCLick
-
+// Event Handler
+function mouseClick(event) {
+  actualClicks++;
+  var clickedProduct = event.target.title;
+  // console.log(clickedProduct);
+  for (var i = 0; i < allProducts.length; i++) {
+    if (clickedProduct === allProducts[i].name) {
+      allProducts[i].votes++;
+    }
+  }
+  // function handleCLick
+  renderProducts();
+  if (actualClicks === maxClicksAllowed) {
+    myContainer.removeEventListener('click',
+      mouseClick);
+    for (var j = 0; j < allProducts.length; j++) {
+      var liElement = document.createElement('li');
+      liElement.textContent = `${allProducts[j].productName} was viewed ${allProducts[j].views} times and clicked ${allProducts[j].votes} times`;
+      resultsList.appendChild(liElement);
+    }
+  }
+}
 renderProducts();
 
-renderProducts();
+myContainer.addEventListener('click', mouseClick);
