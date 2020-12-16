@@ -25,6 +25,11 @@ main img  {
   
 }
 
+canvas {
+  width: 100px;
+  height: 100px;
+  margin: auto;
+}
 section {
   font-family: 'Amatic SC', cursive;
   text-align: center;
