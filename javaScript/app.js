@@ -55,17 +55,17 @@ function getRandomIndex(max) {
 
 function renderProducts() {
   // var productArray = [];
-  while (renderQueue.length < 3) {
+  while (renderQueue.length < 6) {
     var tempIndex = getRandomIndex(allProducts.length);
     while (renderQueue.includes(tempIndex)) {
       tempIndex = getRandomIndex(allProducts.length);
     }
-    renderQueue.unshift(tempIndex);
+    renderQueue.push(tempIndex);
   }
-  var productOneIndex = renderQueue.pop();
+  var productOneIndex = renderQueue.shift();
   // console.log(productOneIndex);
-  var productTwoIndex = renderQueue.pop();
-  var productThreeIndex = renderQueue.pop();
+  var productTwoIndex = renderQueue.shift();
+  var productThreeIndex = renderQueue.shift();
 
   imageOneElement.src = allProducts[productOneIndex].src;
   imageOneElement.alt = allProducts[productOneIndex].name;
@@ -76,11 +76,13 @@ function renderProducts() {
   imageTwoElement.src = allProducts[productTwoIndex].src;
   imageTwoElement.alt = allProducts[productTwoIndex].name;
   imageTwoElement.title = allProducts[productTwoIndex].name;
+
   allProducts[productTwoIndex].views++;
 
   imageThreeElement.src = allProducts[productThreeIndex].src;
   imageThreeElement.alt = allProducts[productThreeIndex].name;
   imageThreeElement.title = allProducts[productThreeIndex].name;
+
   allProducts[productTwoIndex].views++;
 }
 
@@ -114,7 +116,7 @@ function renderChart() {
   var viewsArray = [];
 
   for (var i = 0; i < allProducts.length; i++) {
-    namesArray.push(allProducts[i].name);
+    namesArray.push(allProducts[i].productName);
     votesArray.push(allProducts[i].votes);
     viewsArray.push(allProducts[i].views);
   }
@@ -122,7 +124,7 @@ function renderChart() {
 
   // Chart 
   var ctx = document.getElementById('myChart').getContext('2d');
-  var dataObject = {
+  var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
       labels: namesArray,
@@ -150,12 +152,7 @@ function renderChart() {
         }]
       }
     }
-  };
-
- 
-
-
-  var myChart = new Chart(ctx, dataObject);
+  });
 }
 
 myContainer.addEventListener('click', mouseClick);
