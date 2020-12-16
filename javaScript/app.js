@@ -3,6 +3,7 @@
 //Global Variables 
 
 var allProducts = [];
+var renderQueue = [];
 var maxClicksAllowed = 25;
 var actualClicks = 0;
 
@@ -53,32 +54,25 @@ function getRandomIndex(max) {
 }
 
 function renderProducts() {
-  var productArray = [];
-  while (productArray.length < 3) {
+  // var productArray = [];
+  while (renderQueue.length < 3) {
     var tempIndex = getRandomIndex(allProducts.length);
-    while (productArray.includes(tempIndex)) {
+    while (renderQueue.includes(tempIndex)) {
       tempIndex = getRandomIndex(allProducts.length);
     }
-    productArray.push(tempIndex);
+    renderQueue.unshift(tempIndex);
   }
-  // console.log(tempIndex);
-  //  console.log(productArray);
-
-  var productOneIndex = productArray.pop();
+  var productOneIndex = renderQueue.pop();
   // console.log(productOneIndex);
-  var productTwoIndex = productArray.pop();
-  var productThreeIndex = productArray.pop();
-  // console.log(allProducts);
-  //array here or something 
-  // console.log(productTwoIndex);
-  //Assign info to Products
+  var productTwoIndex = renderQueue.pop();
+  var productThreeIndex = renderQueue.pop();
+
   imageOneElement.src = allProducts[productOneIndex].src;
   imageOneElement.alt = allProducts[productOneIndex].name;
   imageOneElement.title = allProducts[productOneIndex].name;
-  //Log Views
+
   allProducts[productOneIndex].views++;
-  // console.log(productTwoIndex);
-  // Product Two
+
   imageTwoElement.src = allProducts[productTwoIndex].src;
   imageTwoElement.alt = allProducts[productTwoIndex].name;
   imageTwoElement.title = allProducts[productTwoIndex].name;
@@ -103,8 +97,8 @@ function mouseClick(event) {
   // function handleCLick
   renderProducts();
   if (actualClicks === maxClicksAllowed) {
-    myContainer.removeEventListener('click',
-      mouseClick);
+    myContainer.removeEventListener('click', mouseClick);
+    renderChart();
     for (var j = 0; j < allProducts.length; j++) {
       var liElement = document.createElement('li');
       liElement.textContent = `${allProducts[j].productName} was viewed ${allProducts[j].views} times and clicked ${allProducts[j].votes} times`;
@@ -113,5 +107,55 @@ function mouseClick(event) {
   }
 }
 renderProducts();
+
+function renderChart() {
+  var namesArray = [];
+  var votesArray = [];
+  var viewsArray = [];
+
+  for (var i = 0; i < allProducts.length; i++) {
+    namesArray.push(allProducts[i].name);
+    votesArray.push(allProducts[i].votes);
+    viewsArray.push(allProducts[i].views);
+  }
+
+
+  // Chart 
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var dataObject = {
+    type: 'bar',
+    data: {
+      labels: namesArray,
+      datasets: [{
+        label: 'Number of Votes',
+        data: votesArray,
+        backgroundColor: 'rgba(150, 50, 50, 0.2)',
+        borderColor: 'rgba(150, 50, 50, 1)',
+        borderWidth: 8
+      },
+      {
+        label: 'Number of Views',
+        data: viewsArray,
+        backgroundColor: 'rgba(40, 50, 50, 0.2)',
+        borderColor: 'rgba(40, 50, 50, 1)',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  };
+
+ 
+
+
+  var myChart = new Chart(ctx, dataObject);
+}
 
 myContainer.addEventListener('click', mouseClick);
