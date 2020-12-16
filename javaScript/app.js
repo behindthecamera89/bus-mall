@@ -25,30 +25,32 @@ function Product(productName, src = 'jpg' || '.png' || '.gif') {
 
 }
 
-
-// instantiations 
-
-new Product('bag', 'jpg');
-new Product('banana', 'jpg');
-new Product('bathroom', 'jpg');
-new Product('boots', 'jpg');
-new Product('breakfast', 'jpg');
-new Product('bubblegum', 'jpg');
-new Product('chair', 'jpg');
-new Product('cthulhu', 'jpg');
-new Product('dog-duck', 'jpg');
-new Product('dragon', 'jpg');
-new Product('pen', 'jpg');
-new Product('pet-sweep', 'jpg');
-new Product('scissors', 'jpg');
-new Product('shark', 'jpg');
-new Product('sweep', 'png');
-new Product('tauntaun', 'jpg');
-new Product('unicorn', 'jpg');
-new Product('usb', 'gif');
-new Product('water-can', 'jpg');
-new Product('wine-glass', 'jpg');
-
+var retrievedProducts = localStorage.getItem('allProducts');
+if (retrievedProducts) {
+  allProducts = JSON.parse(retrievedProducts);
+} else {
+  // instantiations 
+  new Product('bag', 'jpg');
+  new Product('banana', 'jpg');
+  new Product('bathroom', 'jpg');
+  new Product('boots', 'jpg');
+  new Product('breakfast', 'jpg');
+  new Product('bubblegum', 'jpg');
+  new Product('chair', 'jpg');
+  new Product('cthulhu', 'jpg');
+  new Product('dog-duck', 'jpg');
+  new Product('dragon', 'jpg');
+  new Product('pen', 'jpg');
+  new Product('pet-sweep', 'jpg');
+  new Product('scissors', 'jpg');
+  new Product('shark', 'jpg');
+  new Product('sweep', 'png');
+  new Product('tauntaun', 'jpg');
+  new Product('unicorn', 'jpg');
+  new Product('usb', 'gif');
+  new Product('water-can', 'jpg');
+  new Product('wine-glass', 'jpg');
+}
 function getRandomIndex(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
@@ -101,13 +103,16 @@ function mouseClick(event) {
   if (actualClicks === maxClicksAllowed) {
     myContainer.removeEventListener('click', mouseClick);
     renderChart();
-    for (var j = 0; j < allProducts.length; j++) {
-      var liElement = document.createElement('li');
-      liElement.textContent = `${allProducts[j].productName} was viewed ${allProducts[j].views} times and clicked ${allProducts[j].votes} times`;
-      resultsList.appendChild(liElement);
-    }
+
+    var stringifiedProducts = JSON.stringify(allProducts);
+    localStorage.setItem('products', stringifiedProducts);
+    // for (var j = 0; j < allProducts.length; j++) {
+    //   var liElement = document.createElement('li');
+    //   liElement.textContent = `${allProducts[j].productName} was viewed ${allProducts[j].views} times and clicked ${allProducts[j].votes} times`;
+    //   resultsList.appendChild(liElement);
   }
 }
+
 renderProducts();
 
 function renderChart() {
